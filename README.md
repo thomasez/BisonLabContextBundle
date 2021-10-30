@@ -1,2 +1,5 @@
 # BisonLabContextBundle
-This bundle handles contexts as a system for linking internal models/entities to external ones in a flexible configureable way.
+
+A bundle for the Context system.
+
+This is a flexible configureable way to link internal entities to any external using the triplet system, object name and external id.

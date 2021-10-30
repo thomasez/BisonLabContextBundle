@@ -1,0 +1,20 @@
+{
+    "name": "bisonlab/context-bundle",
+    "type": "symfony-bundle",
+    "description": "This bundle handles contexts as a system for linking internal models/entities to external ones in a flexible configureable way", 
+    "keywords": ["symfony context rest"],
+    "homepage": "https://github.com/thomasez/BisonLabContextBundle",
+    "license": "LGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Thomas Lundquist",
+            "email": "github@bisonlab.no"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": "^5.2"
+    },
+    "autoload": {
+        "psr-4": { "BisonLab\\ContextBundle\\": "src/" }
+    }
+}
