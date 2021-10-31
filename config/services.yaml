@@ -1,11 +1,11 @@
 services:
     BisonLab\ContextBundle\Command\:
-        resource: '../Command/*'
+        resource: '../src/Command/*'
         autowire: true
         tags: ['console.command']
 
     BisonLab\ContextBundle\EventListener\:
-        resource: '../EventListener/*'
+        resource: '../src/EventListener/*'
         autowire: true
         autoconfigure: true
         tags: ['doctrine.event_subscriber']

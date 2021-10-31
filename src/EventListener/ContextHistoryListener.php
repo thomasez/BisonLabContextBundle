@@ -2,9 +2,12 @@
 
 namespace BisonLab\ContextBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface
+use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Context\EventArgs;
 use Doctrine\ORM\Events;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use BisonLab\ContextBundle\Entity\ContextLog;
 
 /*
@@ -17,20 +20,21 @@ class ContextHistoryListener implements EventSubscriberInterface
     private $em;
     private $token_storage;
 
-    public function __construct($token_storage, $doctrine)
+    public function __construct(TokenStorageInterface $token_storage, ManagerRegistry $doctrine)
+    // public function __construct(TokenStorageInterface $token_storage, Registry $doctrine)
     {
         $this->token_storage = $token_storage;
         $this->doctrine      = $doctrine;
     }
 
-    public static function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [
             Events::onFlush,
         ];
     }
 
-    public function onFlush(EventArgs $eventArgs)
+    public function onFlush(EventArgs $eventArgs): void
     {
         $this->em = $eventArgs->getEntityManager();
         $this->uow = $this->em->getUnitOfWork();
@@ -53,7 +57,7 @@ class ContextHistoryListener implements EventSubscriberInterface
         return;
     }
 
-    private function logContext($context, $action)
+    private function logContext($context, $action): void
     {
         // First, ignore if it's meant to be ignored.
         if ($context->doNotLog())

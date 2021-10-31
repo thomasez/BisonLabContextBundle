@@ -2,7 +2,7 @@
 
 namespace BisonLab\ContextBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface
+use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
 class ChangeTracker implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [
             Events::onFlush,
@@ -22,7 +22,7 @@ class ChangeTracker implements EventSubscriberInterface
         ];
     }
 
-    public function onFlush(OnFlushEventArgs $eventArgs)
+    public function onFlush(OnFlushEventArgs $eventArgs): void
     {
         $em = $eventArgs->getEntityManager();
         $uow = $em->getUnitOfWork();
@@ -40,7 +40,7 @@ class ChangeTracker implements EventSubscriberInterface
         }
     }
 
-    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    public function preUpdate(PreUpdateEventArgs $eventArgs): void
     {
         if ($eventArgs->hasChangedField('attributes_json')) {
             if ($json = $eventArgs->getNewValue('attributes_json')) {
@@ -51,7 +51,7 @@ class ChangeTracker implements EventSubscriberInterface
         }
     }
 
-    private function _array_change_key_case_recursive($arr, $case = MB_CASE_LOWER)
+    private function _array_change_key_case_recursive($arr, $case = MB_CASE_LOWER): array
     {
         $ret = array();
         foreach ($arr as $k => $v) {
@@ -62,7 +62,7 @@ class ChangeTracker implements EventSubscriberInterface
         return $ret;
     }
 
-    private function _checkUnique($context, $em)
+    private function _checkUnique($context, $em): void
     {
         if ($exists = $em->getRepository(get_class($context))->findOneBy(array(
                 'system' => $context->getSystem(),

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="BisonLab\ContextBundle\Entity\ContextLogRepository")
  *
  * @ORM\Table(
- *     name="bison_context_log",
+ *     name="bisonlab_context_log",
  *  indexes={
  *      @ORM\Index(name="log_owner_lookup_idx", columns={"owner_class", "owner_id"})
  *  }

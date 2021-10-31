@@ -281,8 +281,8 @@ trait ContextTrait
                 . $entity_name . ' entity.');
         }
 
-        $bcomm_em = $this->getDoctrine()->getManagerForClass("BisonLabContextBundle:ContextLog");
-        $log_repo = $bcomm_em->getRepository('BisonLab\ContextBundle\Entity\ContextLog');
+        $bcont_em = $this->getDoctrine()->getManagerForClass("BisonLabContextBundle:ContextLog");
+        $log_repo = $bcont_em->getRepository('BisonLab\ContextBundle\Entity\ContextLog');
         $logs = $log_repo->findBy(array(
             'owner_class' => $entity_name,
             'owner_id' => $id)

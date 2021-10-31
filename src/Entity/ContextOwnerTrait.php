@@ -29,7 +29,7 @@ trait ContextOwnerTrait
      */
     public function traitConstruct($options = array())
     {
-        $this->contexts = new \Doctrine\Context\Collections\ArrayCollection();
+        $this->contexts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**

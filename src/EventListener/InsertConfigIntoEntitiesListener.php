@@ -2,7 +2,7 @@
 
 namespace BisonLab\ContextBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface
+use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -22,7 +22,7 @@ class InsertConfigIntoEntitiesListener implements EventSubscriberInterface
         $this->params = $params;
     }
 
-    public static function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [
             Events::postLoad,
@@ -30,12 +30,12 @@ class InsertConfigIntoEntitiesListener implements EventSubscriberInterface
         ];
     }
 
-    public function postLoad(LifecycleEventArgs $args)
+    public function postLoad(LifecycleEventArgs $args): void
     {
         $this->_insertConfig($args);
     }
 
-    public function prePersist(LifecycleEventArgs $args)
+    public function prePersist(LifecycleEventArgs $args): void
     {
         $entity = $this->_insertConfig($args);
 
