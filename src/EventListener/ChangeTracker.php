@@ -69,7 +69,9 @@ class ChangeTracker implements EventSubscriberInterface
                 'object_name' => $context->getObjectName(),
                 'external_id' => $context->getExternalId(),
             ))) {
-            throw new ConstraintDefinitionException("Context " . $context->getLabel() . " with external id " . $context->getExternalId() . " is already in use.");
+            // My, myself or not I?
+            if ($exists !== $context)
+                throw new ConstraintDefinitionException("Context " . $context->getLabel() . " with external id " . $context->getExternalId() . " is already in use.");
         }
     }
 }
