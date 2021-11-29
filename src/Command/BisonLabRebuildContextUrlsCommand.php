@@ -46,7 +46,7 @@ EOT
         parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -119,5 +119,6 @@ EOT
 
         }
         $entityManager->flush();
+        return 0;
     }
 }

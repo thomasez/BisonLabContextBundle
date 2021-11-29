@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Context\EventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use BisonLab\ContextBundle\Entity\ContextLog;
@@ -34,7 +35,7 @@ class ContextHistoryListener implements EventSubscriberInterface
         ];
     }
 
-    public function onFlush(EventArgs $eventArgs): void
+    public function onFlush(OnFlushEventArgs $eventArgs): void
     {
         $this->em = $eventArgs->getEntityManager();
         $this->uow = $this->em->getUnitOfWork();

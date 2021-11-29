@@ -1,10 +1,10 @@
 <?php
 
-namespace BisonLab\ContextBundle\Entity;
+namespace BisonLab\ContextBundle\Repository;
 
 use Doctrine\ORM\Mapping as ORM;
 
-trait ContextRepositoryTrait
+trait ContextOwnerRepositoryTrait
 {
     public function getOneByContext($system, $object_name, $external_id)
     {
