@@ -9,6 +9,7 @@
 <button onClick="return addContextForm();">Add</button>
 {% endmacro select_contextform_list %}
 {% import _self as cmacros %}
+
 <script>
 jQuery(document).ready(function() {
     $( ".hide_me" ).hide();
@@ -21,6 +22,7 @@ function addContextForm() {
 }
 </script>
 
+{% set do_select = false %}
 {% for cform in context_forms %}
 {% if cform.has_value or cform.required %}
 <div id="{{ cform.name }}">
@@ -30,6 +32,7 @@ function addContextForm() {
     </li>
 </div>
 {% else %}
+{% set do_select = true %}
 <div id="{{ cform.name }}" class="hide_me">
     <li>
     <strong>{{ cform.label }}</strong>
@@ -38,4 +41,6 @@ function addContextForm() {
 </div>
 {% endif %}
 {% endfor %}
+{% if do_select %}
 {{ cmacros.select_contextform_list(context_forms) }}
+{% endif %}
