@@ -36,7 +36,11 @@ services:
 #            - { name: doctrine.event_listener, event: onFlush  }
 #        arguments: ['@security.token_storage', '@doctrine' ]
 #
-    bisonlab_context.external_retriever:
-        class: BisonLab\ContextBundle\Service\ExternalRetriever
+    BisonLab\ContextBundle\Service\ExternalRetriever:
+        # alias: bisonlab_context.external_retriever
+        # class: BisonLab\ContextBundle\Service\ExternalRetriever
         public: true
-        arguments: ['@service_container']
+        calls:
+            - [ setContainer, ['@service_container'] ]
+        tags:
+            - 'container.service_arguments'

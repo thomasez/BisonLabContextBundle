@@ -34,7 +34,7 @@ class ExternalRetriever
      * container.  For now I'll just keep it, but I have to have a TODO: Get
      * rid of container.
      */
-    public function __construct($container)
+    public function setContainer($container)
     {
         $this->container = $container;
     }
