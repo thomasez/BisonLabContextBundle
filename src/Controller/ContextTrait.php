@@ -9,8 +9,9 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
+
+use BisonLab\ContextBundle\Entity\ContextLog;
 
 trait ContextTrait
 {
@@ -281,8 +282,8 @@ trait ContextTrait
                 . $entity_name . ' entity.');
         }
 
-        $bcont_em = $this->getDoctrine()->getManagerForClass("BisonLabContextBundle:ContextLog");
-        $log_repo = $bcont_em->getRepository('BisonLab\ContextBundle\Entity\ContextLog');
+        $bcont_em = $this->getDoctrine()->getManagerForClass(ContextLog::class);
+        $log_repo = $bcont_em->getRepository(ContextLog::class);
         $logs = $log_repo->findBy(array(
             'owner_class' => $entity_name,
             'owner_id' => $id)
