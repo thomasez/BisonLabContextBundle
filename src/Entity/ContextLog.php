@@ -5,7 +5,7 @@ namespace BisonLab\ContextBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="BisonLab\ContextBundle\Entity\ContextLogRepository")
+ * @ORM\Entity(repositoryClass="BisonLab\ContextBundle\Repository\ContextLogRepository")
  *
  * @ORM\Table(
  *     name="bisonlab_context_log",
