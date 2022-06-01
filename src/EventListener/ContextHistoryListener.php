@@ -100,7 +100,7 @@ class ContextHistoryListener implements EventSubscriberInterface
             $clog->setUserId($user->getid());
         }
         $bcomm_em->persist($clog);
-        $metadata = $bcomm_em->getClassMetadata('BisonLab\ContextBundle\Entity\ContextLog');
+        $metadata = $bcomm_em->getClassMetadata(ContextLog::class);
         $this->uow->computeChangeSet($metadata, $clog);
         return;
     }
