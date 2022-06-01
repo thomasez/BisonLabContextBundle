@@ -51,7 +51,6 @@ class InsertConfigIntoEntitiesListener implements EventSubscriberInterface
         if (in_array("BisonLab\ContextBundle\Entity\ContextBaseTrait", class_uses($entity))) {
             $context_conf = $this->params->get('app.contexts');
             list($bundle, $object) = explode(":", $entity->getOwnerEntityAlias());
-            // do something with the Product
             $object_name = $entity->getObjectName();
             // Gotta be able to handle the case of no config at all..
             if (isset($context_conf[$bundle][$object]) 
