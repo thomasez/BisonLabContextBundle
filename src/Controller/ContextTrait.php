@@ -283,7 +283,7 @@ trait ContextTrait
         }
 
         $bcont_em = $this->getDoctrine()->getManagerForClass(ContextLog::class);
-        $log_repo = $bcont_em->getRepository('BisonLab\ContextBundle\Entity\ContextLog');
+        $log_repo = $bcont_em->getRepository(ContextLog::class);
         $logs = $log_repo->findBy(array(
             'owner_class' => $entity_name,
             'owner_id' => $id)

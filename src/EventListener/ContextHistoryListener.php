@@ -68,8 +68,7 @@ class ContextHistoryListener implements EventSubscriberInterface
         // I was hoping we didn't and it really should not be like that.
 
         // Gotta use the correct entity manager
-        $bcomm_em = $this->doctrine->getManagerForClass(
-            "BisonLabContextBundle:ContextLog");
+        $bcomm_em = $this->doctrine->getManagerForClass(ContextLog::class);
 
         // Then, check if the owner is set for removal. 
         // It may even be disconnected already, so if there are no owner,
