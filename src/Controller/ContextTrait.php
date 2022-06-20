@@ -95,7 +95,12 @@ trait ContextTrait
         // This is actually very wrong... It's not really common is it?
         // TODO: get rid of this one, aka make it generic.
         $context_conf = $this->container->getParameter('app.contexts');
-        list($bundle, $object) = explode(":", $context_for);
+        if (strstr($context_for, ":")) {
+            list($bundle, $object) = explode(":", $context_for);
+        } else {
+            $bundle = explode("\\", $context_for)[0];
+            $object = substr(strrchr($context_for, '\\'), 1);
+        }
         $conf = $context_conf[$bundle][$object];
 
         $forms = array();
@@ -167,7 +172,12 @@ trait ContextTrait
         $em = $this->getDoctrine()->getManagerForClass($context_for);
 
         $context_conf = $this->container->getParameter('app.contexts');
-        list($bundle, $object) = explode(":", $context_for);
+        if (strstr($context_for, ":")) {
+            list($bundle, $object) = explode(":", $context_for);
+        } else {
+            $bundle = explode("\\", $context_for)[0];
+            $object = substr(strrchr($context_for, '\\'), 1);
+        }
         $conf = $context_conf[$bundle][$object];
         $forms = array();
         // There  might be no contexts at all.
