@@ -169,7 +169,7 @@ trait ContextTrait
     }
 
     public function updateContextForms($request, $context_for, $context_class, $owner) {
-        $em = $this->getDoctrine()->getManagerForClass($context_for);
+        $em = $this->getDoctrine()->getManagerForClass($context_class);
 
         $context_conf = $this->container->getParameter('app.contexts');
         if (strstr($context_for, ":")) {
