@@ -2,6 +2,9 @@
 
 namespace BisonLab\ContextBundle\Service;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
+
 /*
  * Absurdly simple. This is the single point for retrieving external data from 
  * a context. Aka, the main point with the context system.
@@ -23,29 +26,36 @@ namespace BisonLab\ContextBundle\Service;
  * about who is asking.
  *
  * And I should ponder about how they can find out.
+ *
+ * To use this, add the tag "bisonlab.context_owner_retriever" to the directory
+ * you have yours.
+ *
+ * I may have to change it later, but for now only one retriever per system.
  */
 
 class ExternalRetriever
 {
-    private $container;
+    private $locator;
 
-    /*
-     * I wonder if this service is even close to possible without the
-     * container.  For now I'll just keep it, but I have to have a TODO: Get
-     * rid of container.
-     */
-    public function setContainer($container)
+    private $retrievers;
+
+    public function __construct(ServiceLocator $locator)
     {
-        $this->container = $container;
+        $this->locator = $locator;
+        foreach ($this->locator->getProvidedServices() as $sclass) {
+            $retriever = $this->locator->get($sclass);
+            $name = $retriever->getSystem();
+            // Is the correct thing to keep the instansiated object here or
+            // just the class name for later retrieving via the locator?
+            $this->retrievers[$name] = $retriever;
+        }
     }
 
     public function getExternalDataFromContext($context) 
     {
-        $rname = strtolower($context->getSystem() . "_retriever");
-        $retriever = $this->container->get($rname);
-        if (is_object($retriever)
-            && method_exists($retriever, 'getExternalDataFromContext'))
-                return $retriever->getExternalDataFromContext($context);
+        $system = $context->getSystem();
+        if ($retriever = $this->retrievers[$system] ?? null)
+            return $retriever->getExternalDataFromContext($context);
         else
             return null;
     }
