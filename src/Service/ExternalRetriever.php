@@ -44,10 +44,11 @@ class ExternalRetriever
         $this->locator = $locator;
         foreach ($this->locator->getProvidedServices() as $sclass) {
             $retriever = $this->locator->get($sclass);
-            $name = $retriever->getSystem();
             // Is the correct thing to keep the instansiated object here or
             // just the class name for later retrieving via the locator?
-            $this->retrievers[$name] = $retriever;
+            foreach ($retriever->getSystems() as $name) {
+                $this->retrievers[$name] = $retriever;
+            }
         }
     }
 
