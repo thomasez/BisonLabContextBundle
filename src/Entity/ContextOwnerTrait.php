@@ -66,4 +66,22 @@ trait ContextOwnerTrait
     {
         $this->contexts->removeElement($context);
     }
+
+    /**
+     * Get contexts
+     *
+     * @return objects
+     */
+    public function getContextsAsHash()
+    {
+        $arr = array();
+        // This has a flaw, it only handles one context of each type.
+        // It was correct to assume there would be only one, but some extra
+        // services are not of a kind that really needs it's own service in
+        // Dabaru. (In the first case; An SLA extra product.)
+        foreach ($this->getContexts() as $c) {
+            $arr[$c->getSystem()][$c->getObjectName()] = $c;
+        }
+        return $arr;
+    }
 }
