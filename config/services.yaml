@@ -17,7 +17,6 @@ services:
         exclude:
             - '../src/Repository/ContextBaseRepository.php'
 
-
 #    bisonlab_context.inject_context_config:
 #        class: BisonLab\ContextBundle\EventListener\InsertConfigIntoEntitiesListener
 #        autowire: true
@@ -41,3 +40,7 @@ services:
         autowire: true
         autoconfigure: true
         arguments: [!tagged_locator { tag: 'bisonlab.context_owner_retriever', index_by: 'key' }]
+
+    bisonlab.context_retriever:
+        alias: BisonLab\ContextBundle\Service\ExternalRetriever
+        public: true
