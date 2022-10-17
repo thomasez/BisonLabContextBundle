@@ -14,8 +14,8 @@ trait ContextBaseTrait
     /**
      * @var integer $id
      *
-     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
+     * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -230,7 +230,7 @@ trait ContextBaseTrait
      */
     public function getOwnerId()
     {
-        return $this->getOwner()->getid();
+        return $this->getOwner()->getId();
     }
 
     public function __toString()
