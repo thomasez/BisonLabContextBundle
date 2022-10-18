@@ -22,7 +22,6 @@ class ContextHistoryListener implements EventSubscriberInterface
     private $token_storage;
 
     public function __construct(TokenStorageInterface $token_storage, ManagerRegistry $doctrine)
-    // public function __construct(TokenStorageInterface $token_storage, Registry $doctrine)
     {
         $this->token_storage = $token_storage;
         $this->doctrine      = $doctrine;

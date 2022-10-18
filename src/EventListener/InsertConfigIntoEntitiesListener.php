@@ -38,11 +38,6 @@ class InsertConfigIntoEntitiesListener implements EventSubscriberInterface
     public function prePersist(LifecycleEventArgs $args): void
     {
         $entity = $this->_insertConfig($args);
-
-        if ($entity && !$entity->getUrl() 
-                && method_exists($entity, 'resetUrl')) {
-            $entity->resetUrl();
-        }
     }
 
     private function _insertConfig($args)
