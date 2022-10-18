@@ -283,8 +283,11 @@ trait ContextTrait
     /* 
      * Showing the context logs.
      */
-    public function showContextLogPage($request, $access, $entity_name, $id)
+    public function showContextLogPage($request, $access, $context_class, $id)
     {
+        $cc = new $context_class();
+        $entity_name = $cc->getOwnerEntityClass();
+        $entity_alias = $cc->getOwnerEntityAlias();
         $em = $this->getDoctrine()->getManagerForClass($entity_name);
         $entity = $em->getRepository($entity_name)->find($id);
         if (!$entity) {
@@ -294,10 +297,7 @@ trait ContextTrait
 
         $bcont_em = $this->getDoctrine()->getManagerForClass(ContextLog::class);
         $log_repo = $bcont_em->getRepository(ContextLog::class);
-        $logs = $log_repo->findBy(array(
-            'owner_class' => $entity_name,
-            'owner_id' => $id)
-            , array('logged_at' => 'DESC'));
+        $logs = $log_repo->findByOwner($cc, $id);
 
         if ($access == 'rest') {
             return $this->returnRestData($request, $logs);
