@@ -13,17 +13,30 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
 use BisonLab\ContextBundle\Entity\ContextLog;
 
+/*
+ * use these:
+
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Doctrine\Persistence\ManagerRegistry;
+
+ * Add these in the construct:
+
+        private ParameterBagInterface $parameterBag,
+        private FormFactoryInterface $formBuilder,
+        private ManagerRegistry $managerRegistry,
+
+ */
+
 trait ContextTrait
 {
-
     /*
      * The Context stuff
      */
-
     public function contextGetAction(Request $request, $context_config, $access, $system, $object_name, $external_id)
     {
         $class = $context_config['entity'];
-        $em = $this->getDoctrine()->getManagerForClass($class);
+        $em = $this->managerRegistry->getManagerForClass($class);
 
         $repo = $em->getRepository($class);
 
@@ -90,11 +103,9 @@ trait ContextTrait
             $context_arr[$c->getSystem()][$c->getObjectName()] = $c;
         }
 
-        $form_factory = $this->container->get('form.factory');
-
         // This is actually very wrong... It's not really common is it?
         // TODO: get rid of this one, aka make it generic.
-        $context_conf = $this->container->getParameter('app.contexts');
+        $context_conf = $this->parameterBag->get('app.contexts');
         if (strstr($context_for, ":")) {
             list($bundle, $object) = explode(":", $context_for);
         } else {
@@ -129,14 +140,14 @@ trait ContextTrait
                     $has_value = true;
                     $c_object = $context_arr[$system_name][$object_name];
 
-                    $form = $form_factory->createNamedBuilder($form_name,
+                    $form = $this->formBuilder->createNamedBuilder($form_name,
                             FormType::class, $c_object)
                         ->add('id', HiddenType::class, array(
                           'data' => $c_object->getId()))
                         ->add('external_id', TextType::class, array(
                           'label' => 'External ID', 'required' => $required));
                 } else {
-                    $form = $form_factory->createNamedBuilder($form_name,
+                    $form = $this->formBuilder->createNamedBuilder($form_name,
                             FormType::class)
                         ->add('external_id', TextType::class, array(
                           'label' => 'External ID', 'required' => $required));
@@ -169,9 +180,9 @@ trait ContextTrait
     }
 
     public function updateContextForms($request, $context_for, $context_class, $owner) {
-        $em = $this->getDoctrine()->getManagerForClass($context_for);
+        $em = $this->managerRegistry->getManagerForClass($context_for);
 
-        $context_conf = $this->container->getParameter('app.contexts');
+        $context_conf = $this->parameterBag->get('app.contexts');
         if (strstr($context_for, ":")) {
             list($bundle, $object) = explode(":", $context_for);
         } else {
@@ -288,14 +299,14 @@ trait ContextTrait
         $cc = new $context_class();
         $entity_name = $cc->getOwnerEntityClass();
         $entity_alias = $cc->getOwnerEntityAlias();
-        $em = $this->getDoctrine()->getManagerForClass($entity_name);
+        $em = $this->managerRegistry->getManagerForClass($entity_name);
         $entity = $em->getRepository($entity_name)->find($id);
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find '
                 . $entity_name . ' entity.');
         }
 
-        $bcont_em = $this->getDoctrine()->getManagerForClass(ContextLog::class);
+        $bcont_em = $this->managerRegistry->getManagerForClass(ContextLog::class);
         $log_repo = $bcont_em->getRepository(ContextLog::class);
         $logs = $log_repo->findByOwner($cc, $id);
 
