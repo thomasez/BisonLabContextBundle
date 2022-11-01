@@ -23,7 +23,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * Add these in the construct:
 
         private ParameterBagInterface $parameterBag,
-        private FormFactoryInterface $formBuilder,
+        private FormFactoryInterface $formFactory,
         private ManagerRegistry $managerRegistry,
 
  */
@@ -140,14 +140,14 @@ trait ContextTrait
                     $has_value = true;
                     $c_object = $context_arr[$system_name][$object_name];
 
-                    $form = $this->formBuilder->createNamedBuilder($form_name,
+                    $form = $this->formFactory->createNamedBuilder($form_name,
                             FormType::class, $c_object)
                         ->add('id', HiddenType::class, array(
                           'data' => $c_object->getId()))
                         ->add('external_id', TextType::class, array(
                           'label' => 'External ID', 'required' => $required));
                 } else {
-                    $form = $this->formBuilder->createNamedBuilder($form_name,
+                    $form = $this->formFactory->createNamedBuilder($form_name,
                             FormType::class)
                         ->add('external_id', TextType::class, array(
                           'label' => 'External ID', 'required' => $required));
