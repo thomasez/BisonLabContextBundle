@@ -87,7 +87,7 @@ trait ContextTrait
     public function contextPostAction(Request $request, $context_config, $access)
     {
         trigger_error('The '.__METHOD__.' method is deprecated. Please contextGetAction else instead', E_USER_DEPRECATED);
-        $post_data = $request->request->get('form');
+        $post_data = $request->request->all()['form'] == [];
 
         list( $system, $object_name) = explode("__", $post_data['system__object_name']);
         $object_id = $post_data['object_id'];
@@ -128,7 +128,7 @@ trait ContextTrait
                     continue;
 
                 $object_name = $context_object_config['object_name'];
-                $form_name  = "context__" . $system_name . "__" . $object_name;
+                $form_name  = "context_" . $system_name . "_" . $object_name;
                 $form_label = $context_object_config['label'];
 
                 // TODO: Use types more active. Like ExternalId should be
@@ -189,21 +189,24 @@ trait ContextTrait
             $bundle = explode("\\", $context_for)[0];
             $object = substr(strrchr($context_for, '\\'), 1);
         }
+dump($bundle);
+dump($object);
         $conf = $context_conf[$bundle][$object];
+dump($conf);
         $forms = array();
-        // There  might be no contexts at all.
+        // There might be no contexts at all.
         if (!$conf) return $forms;
-        // Object_info was a bas choice, it's the context object listing per
+        // Object_info was a bad choice, it's the context object listing per
         // system.
         foreach ($conf as $system_name => $object_info) {
             // And here, context_object_config is the object config itself.
             foreach ($object_info as $context_object_config) {
                 $object_name = $context_object_config['object_name'];
-                $form_name  = "context__" . $system_name . "__" . $object_name;
+                $form_name  = "context_" . $system_name . "_" . $object_name;
 
-                $context_arr = $request->request->get($form_name);
-
-                if (empty($context_arr)) { continue; }
+                $post_data = $request->request->all();
+                $context_arr = $post_data[$form_name] ?? null;
+                if (!$context_arr) { continue; }
 
                 if (isset($context_arr['id']) ) {
                     $context = $em->getRepository($context_class)
