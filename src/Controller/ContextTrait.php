@@ -181,18 +181,16 @@ trait ContextTrait
 
     public function updateContextForms($request, $context_for, $context_class, $owner) {
         $em = $this->managerRegistry->getManagerForClass($context_for);
-
+        $context_repo = $em->getRepository($context_class);
         $context_conf = $this->parameterBag->get('app.contexts');
+
         if (strstr($context_for, ":")) {
             list($bundle, $object) = explode(":", $context_for);
         } else {
             $bundle = explode("\\", $context_for)[0];
             $object = substr(strrchr($context_for, '\\'), 1);
         }
-dump($bundle);
-dump($object);
         $conf = $context_conf[$bundle][$object];
-dump($conf);
         $forms = array();
         // There might be no contexts at all.
         if (!$conf) return $forms;
@@ -209,8 +207,7 @@ dump($conf);
                 if (!$context_arr) { continue; }
 
                 if (isset($context_arr['id']) ) {
-                    $context = $em->getRepository($context_class)
-                        ->find($context_arr['id']);
+                    $context = $context_repo->find($context_arr['id']);
                     if (empty($context_arr['external_id']) 
                             && empty($context_arr['url'])) { 
                         // No need for an empty context.
