@@ -189,10 +189,7 @@ trait ContextTrait
             $bundle = explode("\\", $context_for)[0];
             $object = substr(strrchr($context_for, '\\'), 1);
         }
-dump($bundle);
-dump($object);
         $conf = $context_conf[$bundle][$object];
-dump($conf);
         $forms = array();
         // There might be no contexts at all.
         if (!$conf) return $forms;

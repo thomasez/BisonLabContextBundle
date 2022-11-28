@@ -155,7 +155,8 @@ trait ContextBaseTrait
      */
     public function resetUrl()
     {
-        // Good old one.
+        // Good old one. No externalid, no need to do this?
+        // The URL may just be a url, alas, do this anyway.
         if (isset($this->config['url_base'])) {
             $this->url = $this->config['url_base'] . $this->getExternalId();
         }    
@@ -169,7 +170,14 @@ trait ContextBaseTrait
                 'object_name' => $this->getObjectName(),
                 'owner_id' => $this->getOwnerId(),
                 );
+            // What to do if the template has a key with no corresponding val?
+            // JUmp it and hope it'll be better next time round (maybe after a
+            // flush)
             foreach ($context_arr as $key => $val) {
+                if (empty($val) && strstr($this->url, $key)) {
+                    $this->url = null;
+                    break;
+                }
                 $this->url = preg_replace('/\{\{\s?'.$key.'\s?\}\}/i',
                                 $val , $this->url);
             }
