@@ -1,41 +1,16 @@
 services:
-    BisonLab\ContextBundle\Command\:
-        resource: '../src/Command/*'
-        autowire: true
-        tags: ['console.command']
-
-    BisonLab\ContextBundle\EventListener\:
-        resource: '../src/EventListener/*'
+    _defaults:
         autowire: true
         autoconfigure: true
-        tags: ['doctrine.event_subscriber']
 
-    BisonLab\ContextBundle\Repository\:
-        resource: '../src/Repository/*'
-        autowire: true
-        tags: ['doctrine.repository_service']
+    BisonLab\ContextBundle\:
+        resource: '../src/'
         exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Lib/'
             - '../src/Repository/ContextBaseRepository.php'
+            - '../src/Service/ExternalRetriever.php'
 
-#    bisonlab_context.inject_context_config:
-#        class: BisonLab\ContextBundle\EventListener\InsertConfigIntoEntitiesListener
-#        autowire: true
-#        tags:
-#            - { name: doctrine.event_listener, event: postLoad  }
-#            - { name: doctrine.event_listener, event: prePersist  }
-#
-#    bisonlab_context.changetracker:
-#        class: BisonLab\ContextBundle\EventListener\ChangeTracker
-#        tags:
-#            - { name: doctrine.event_listener, event: preUpdate  }
-#            - { name: doctrine.event_listener, event: onFlush  }
-#
-#    bisonlab_context.contexthistory:
-#        class: BisonLab\ContextBundle\EventListener\ContextHistoryListener
-#        tags:
-#            - { name: doctrine.event_listener, event: onFlush  }
-#        arguments: ['@security.token_storage', '@doctrine' ]
-#
     BisonLab\ContextBundle\Service\ExternalRetriever:
         autowire: true
         autoconfigure: true
