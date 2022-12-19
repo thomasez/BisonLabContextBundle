@@ -135,8 +135,7 @@ trait ContextTrait
                 // compulsary in more or less all cases except
                 // "informal_url_only".
                 $has_value = false;
-                $required  = count($contexts) > 0 && $context_object_config['required'] ?? false;
-dump($required);
+                $required  = count($contexts) > 0 && ($context_object_config['required'] ?? false);
                 if (isset($context_arr[$system_name][$object_name])) {
                     $has_value = true;
                     $c_object = $context_arr[$system_name][$object_name];
