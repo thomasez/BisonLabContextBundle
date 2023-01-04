@@ -65,8 +65,11 @@ trait ContextBaseTrait
             $this->setUrl($options['url']);
     }
 
-    /* But for those using this trait fully, aka not having their own.: */
-    public function __construct($options = array()) {
+    /*
+     * But for those using this trait fully, aka not having their own:
+     */
+    public function __construct($options = array())
+    {
         return $this->traitConstruct($options);
     }
 
@@ -170,10 +173,18 @@ trait ContextBaseTrait
                 'object_name' => $this->getObjectName(),
                 'owner_id' => $this->getOwnerId(),
                 );
-            // What to do if the template has a key with no corresponding val?
-            // JUmp it and hope it'll be better next time round (maybe after a
-            // flush)
+            // Add owner object properties. (Not going full twig parser, yet)
+            foreach ((array)$this->getOwner() as $k => $v) {
+                if (!(is_numeric($v) || is_string($v))) continue;
+                // Why did I have to do this? Got a reference error.
+                $karr = explode("\x00", $k);
+                $key = "owner." . array_pop($karr);
+                $context_arr[$key] = $v;
+            }
             foreach ($context_arr as $key => $val) {
+                // What to do if the template has a key with no corresponding
+                // val?  Jump it and hope it'll be better next time round
+                // (maybe after a flush)
                 if (empty($val) && strstr($this->url, $key)) {
                     $this->url = null;
                     break;

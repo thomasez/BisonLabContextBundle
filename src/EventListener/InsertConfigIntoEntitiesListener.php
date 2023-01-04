@@ -12,7 +12,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  * what they are and can do, all from a simple config file.
  * contexts.yml
  */
-
 class InsertConfigIntoEntitiesListener implements EventSubscriberInterface
 {
     private $params;

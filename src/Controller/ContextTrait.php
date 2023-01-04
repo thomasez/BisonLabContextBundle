@@ -158,16 +158,9 @@ trait ContextTrait
                  * URL in the forms. The rest will be calculated
                  * automatically.
                  */
-                if (!isset($context_object_config['url_from_method'])) {
-                    error_log("No url_from_method for " . $systen_name
-                            . "::" . $object_name);
-                } else {
-                    if ($context_object_config['url_from_method'] == "manual" 
-                      || $context_object_config['url_from_method'] == "editable") {
-                        $form->add('url', TextType::class, 
-                            array('label' => 'URL', 'required' => false));
-                    }
-                }
+                if (in_array(($context_object_config['url_from_method'] ?? null), ["manual", "editable"]))
+                    $form->add('url', TextType::class,
+                        array('label' => 'URL', 'required' => false));
                 $forms[] = array(
                     'label'     => $form_label,
                     'name'      => $form_name,
@@ -179,7 +172,8 @@ trait ContextTrait
         return $forms;
     }
 
-    public function updateContextForms($request, $context_for, $context_class, $owner) {
+    public function updateContextForms($request, $context_for, $context_class, $owner)
+    {
         $em = $this->managerRegistry->getManagerForClass($context_for);
         $context_repo = $em->getRepository($context_class);
         $context_conf = $this->parameterBag->get('app.contexts');
@@ -216,8 +210,8 @@ trait ContextTrait
                     } else {
                         $context->setExternalId(trim($context_arr['external_id']));
                         if (empty($context_arr['url']) ) {
-                            $context->setUrl(self::createContextUrl(
-                                $context_arr, $context_object_config));
+                            $context->setConfig($context_object_config);
+                            $context->resetUrl();
                         } else {
                             $context->setUrl($context_arr['url']);
                         }
@@ -229,38 +223,21 @@ trait ContextTrait
                     $context->setSystem($system_name);
                     $context->setObjectName($object_name);
                     $context->setExternalId(trim($context_arr['external_id']));
-                    if (empty($context_arr['url'])) {
-                        $context->setUrl(self::createContextUrl($context_arr,
-                            $context_object_config));
-                    } else {
-                        $context->setUrl($context_arr['url']);
-                    }
                     $context->setOwner($owner);
                     $owner->addContext($context);
                     $em->persist($context);
                     $em->persist($owner);
+                    if (empty($context_arr['url'])) {
+                        $context->setConfig($context_object_config);
+                        $context->resetUrl();
+                    } else {
+                        $context->setUrl($context_arr['url']);
+                    }
                 } else {
                     continue;
                 }
             }
         }
-    }
-
-    static function createContextUrl($context_arr, $config)
-    {
-        // Good old one.
-        if (isset($config['url_base'])) {
-            return $config['url_base'] . $context_arr['external_id'];
-        }    
-        // Or we have a twig template'ish.
-        if (isset($config['url_template'])) {
-            $url = $config['url_template'];
-            foreach ($context_arr as $key => $val) {
-                $url = preg_replace('/\{\{\s?'.$key.'\s?\}\}/i',
-                                $val , $url);
-            }
-            return $url;
-        }    
     }
     
     public function createContextSearchForm($config, $options = array())
