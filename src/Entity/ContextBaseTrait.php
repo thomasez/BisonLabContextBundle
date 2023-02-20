@@ -48,13 +48,9 @@ trait ContextBaseTrait
      */
     private $url;
 
-    /* 
-     * This could also be solved with keeping __construct() and then
-     * use ContextBaseTrait { __construct as traitConstruct }
-     * but I cannot see why it's better. To me it's more confusing.
-     */
-    public function traitConstruct($options = array())
-    {
+    public function __construct(
+        $options = array()
+    ) {
         if (isset($options['system'])) 
             $this->setSystem($options['system']);
         if (isset($options['object_name'])) 
@@ -63,14 +59,6 @@ trait ContextBaseTrait
             $this->setExternalId($options['external_id']);
         if (isset($options['url'])) 
             $this->setUrl($options['url']);
-    }
-
-    /*
-     * But for those using this trait fully, aka not having their own:
-     */
-    public function __construct($options = array())
-    {
-        return $this->traitConstruct($options);
     }
 
     /**
