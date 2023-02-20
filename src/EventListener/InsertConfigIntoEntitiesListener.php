@@ -14,11 +14,9 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class InsertConfigIntoEntitiesListener implements EventSubscriberInterface
 {
-    private $params;
-
-    public function __construct(ParameterBagInterface $params)
-    {
-        $this->params = $params;
+    public function __construct(
+        private ParameterBagInterface $params
+    ) {
     }
 
     public function getSubscribedEvents(): array

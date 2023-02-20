@@ -18,13 +18,11 @@ use BisonLab\ContextBundle\Entity\ContextLog;
 class ContextHistoryListener implements EventSubscriberInterface
 {
     private $uow;
-    private $em;
-    private $token_storage;
 
-    public function __construct(TokenStorageInterface $token_storage, ManagerRegistry $doctrine)
-    {
-        $this->token_storage = $token_storage;
-        $this->doctrine      = $doctrine;
+    public function __construct(
+        private TokenStorageInterface $token_storage,
+        private ManagerRegistry $doctrine
+    ) {
     }
 
     public function getSubscribedEvents(): array
@@ -36,8 +34,7 @@ class ContextHistoryListener implements EventSubscriberInterface
 
     public function onFlush(OnFlushEventArgs $eventArgs): void
     {
-        $this->em = $eventArgs->getEntityManager();
-        $this->uow = $this->em->getUnitOfWork();
+        $this->uow = $eventArgs->getEntityManager()->getUnitOfWork();
 
         foreach ($this->uow->getScheduledEntityInsertions() as $entity) {
             if (in_array("BisonLab\ContextBundle\Entity\ContextBaseTrait",

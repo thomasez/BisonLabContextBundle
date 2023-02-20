@@ -27,9 +27,6 @@ use BisonLab\ContextBundle\Controller\ContextController as ContextController;
 )]
 class BisonLabRebuildContextUrlsCommand extends Command
 {
-    private $entityManager;
-    private $params;
-
     protected function configure()
     {
         $this
@@ -41,10 +38,10 @@ EOT
             );
     }
 
-    public function __construct(EntityManagerInterface $entityManager, ParameterBagInterface $params)
-    {
-        $this->entityManager = $entityManager;
-        $this->params = $params;
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private ParameterBagInterface $params
+    ) {
         parent::__construct();
     }
 
