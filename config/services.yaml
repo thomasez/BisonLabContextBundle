@@ -11,6 +11,11 @@ services:
             - '../src/Repository/ContextBaseRepository.php'
             - '../src/Service/ExternalRetriever.php'
 
+    BisonLab\ContextBundle\Lib\Retriever\:
+        resource: '../src/Lib/Retriever/'
+        tags:
+            - { name: 'bisonlab.context_owner_retriever' , index_by: 'key' }
+
     BisonLab\ContextBundle\Service\ExternalRetriever:
         autowire: true
         autoconfigure: true
