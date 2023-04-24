@@ -66,7 +66,7 @@ trait ContextBaseTrait
      *
      * @return integer 
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -77,7 +77,7 @@ trait ContextBaseTrait
      * @param string $system
      * @return $this
      */
-    public function setSystem($system)
+    public function setSystem(string $system): self
     {
         $this->system = $system;
         return $this;
@@ -88,7 +88,7 @@ trait ContextBaseTrait
      *
      * @return string 
      */
-    public function getSystem()
+    public function getSystem(): string
     {
         return $this->system;
     }
@@ -99,7 +99,7 @@ trait ContextBaseTrait
      * @param string $object_name
      * @return a Context object
      */
-    public function setObjectName($object_name)
+    public function setObjectName(string $object_name): self
     {
         $this->object_name = $object_name;
         return $this;
@@ -110,7 +110,7 @@ trait ContextBaseTrait
      *
      * @return string 
      */
-    public function getObjectName()
+    public function getObjectName(): string
     {
         return $this->object_name;
     }
@@ -121,7 +121,7 @@ trait ContextBaseTrait
      * @param string $externalId
      * @return $this
      */
-    public function setExternalId($externalId)
+    public function setExternalId(string|int $externalId): self
     {
         $this->external_id = $externalId;
         return $this;
@@ -132,7 +132,7 @@ trait ContextBaseTrait
      *
      * @return string 
      */
-    public function getExternalId()
+    public function getExternalId(): string|int
     {
         return $this->external_id;
     }
@@ -144,7 +144,7 @@ trait ContextBaseTrait
      * @param string $url
      * @return $this
      */
-    public function resetUrl()
+    public function resetUrl(): void
     {
         // Good old one. No externalid, no need to do this?
         // The URL may just be a url, alas, do this anyway.
@@ -181,7 +181,6 @@ trait ContextBaseTrait
                                 $val , $this->url);
             }
         }    
-        return $this;
     }
 
     /**
@@ -190,7 +189,7 @@ trait ContextBaseTrait
      * @param string $url
      * @return a Context object
      */
-    public function setUrl($url)
+    public function setUrl(?string $url)
     {
         $this->url = $url;
         return $this;
@@ -201,7 +200,7 @@ trait ContextBaseTrait
      *
      * @return string 
      */
-    public function getUrl()
+    public function getUrl(): ?string
     {
         /*
          * May be overkill, but if the config has changed it may be useful to
@@ -217,9 +216,10 @@ trait ContextBaseTrait
      *
      * @return object
      */
-    public function setOwner($object)
+    public function setOwner(object $object): self
     {
         $this->owner = $object;
+        return $this;
     }
 
     /**
@@ -227,7 +227,7 @@ trait ContextBaseTrait
      *
      * @return object
      */
-    public function getOwner()
+    public function getOwner(): object
     {
         return $this->owner;
     }
@@ -235,22 +235,23 @@ trait ContextBaseTrait
     /*
      * Owner helpers.
      */
-    public function getOwnerId()
+    public function getOwnerId(): string|int
     {
         return $this->getOwner()->getId();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->id;
     }
 
-    public function setConfig($config = array())
+    public function setConfig($config = array()): self
     {
         $this->config = $config;
+        return $this;
     }
 
-    public function getConfig()
+    public function getConfig(): mixed
     {
         return $this->config;
     }
@@ -260,7 +261,7 @@ trait ContextBaseTrait
      *
      * @return string 
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->config['label'];
     }
@@ -270,7 +271,7 @@ trait ContextBaseTrait
      *
      * @return string 
      */
-    public function getContextType()
+    public function getContextType(): string
     {
         return $this->config['type'];
     }
@@ -280,7 +281,7 @@ trait ContextBaseTrait
      * It should be no context object if there are no external ID but that's
      * another story.
      */
-    public function isDeleteable()
+    public function isDeleteable(): bool
     {
         // It's not really working well as it is now. Not bad enough so we'll
         // keep it but if you end up having issues, just clone the function
@@ -296,7 +297,7 @@ trait ContextBaseTrait
      * one. Not really sure I agree with myself here, but it makes
      * the most sense.
      */
-    public function isUnique()
+    public function isUnique(): bool
     {
         return $this->config['unique'] ?? true;
     }
@@ -305,7 +306,7 @@ trait ContextBaseTrait
      * If there can be only one of these per Owner.
      * This is default true, it usually makes no sense with more.
      */
-    public function getOnePerOwner()
+    public function getOnePerOwner(): bool
     {
         return $this->config['one_per_owner'] ?? true;
     }
@@ -318,7 +319,7 @@ trait ContextBaseTrait
      *
      * @return boolean 
      */
-    public function getRequired()
+    public function getRequired(): bool
     {
         return $this->config['required'] ?? false;
     }
@@ -326,7 +327,7 @@ trait ContextBaseTrait
     /*
      * Alas, default behaviour is to log context changes.
      */
-    public function doNotLog()
+    public function doNotLog(): bool
     {
         return $this->config['no_logging'] ?? false;
     }
