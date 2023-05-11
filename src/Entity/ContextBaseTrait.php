@@ -235,9 +235,9 @@ trait ContextBaseTrait
     /*
      * Owner helpers.
      */
-    public function getOwnerId(): string|int
+    public function getOwnerId(): mixed
     {
-        return $this->getOwner()->getId();
+        return $this->getOwner()?->getId();
     }
 
     public function __toString(): string
