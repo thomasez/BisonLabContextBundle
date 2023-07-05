@@ -27,7 +27,7 @@ use BisonLab\ContextBundle\Controller\ContextController as ContextController;
 )]
 class BisonLabRebuildContextUrlsCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption('context_object', null, InputOption::VALUE_REQUIRED, 'The object you want the contexts to be rebuild for. ')
