@@ -105,29 +105,9 @@ class ContextLog
         return $this;
     }
 
-    public function setUserId($user_id)
+    public function setUserId(string|int $user_id)
     {
         $this->user_id = $user_id;
-    }
-
-    /**
-     * Get action
-     *
-     * @return string 
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
-     * Get logged_at
-     *
-     * @return string 
-     */
-    public function getLoggedAt()
-    {
-        return $this->logged_at;
     }
 
     /**
@@ -135,9 +115,29 @@ class ContextLog
      *
      * @return string 
      */
-    public function getUserId()
+    public function getUserId(): string|int
     {
         return $this->user_id;
+    }
+
+    /**
+     * Get action
+     *
+     * @return string 
+     */
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    /**
+     * Get logged_at
+     *
+     * @return DateTime 
+     */
+    public function getLoggedAt(): \DateTime
+    {
+        return $this->logged_at;
     }
 
     /**
@@ -145,7 +145,7 @@ class ContextLog
      *
      * @return string 
      */
-    public function getSystem()
+    public function getSystem(): string
     {
         return $this->system;
     }
@@ -155,7 +155,7 @@ class ContextLog
      *
      * @return string 
      */
-    public function getObjectName()
+    public function getObjectName(): string
     {
         return $this->object_name;
     }
@@ -165,7 +165,7 @@ class ContextLog
      *
      * @return string 
      */
-    public function getExternalId()
+    public function getExternalId(): string|int
     {
         return $this->external_id;
     }
@@ -175,7 +175,7 @@ class ContextLog
      *
      * @return string 
      */
-    public function getUrl()
+    public function getUrl(): ?string
     {
         return $this->url;
     }

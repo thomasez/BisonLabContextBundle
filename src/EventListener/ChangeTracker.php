@@ -2,26 +2,15 @@
 
 namespace BisonLab\ContextBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use Doctrine\ORM\Events;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
-/*
- * Does as little as possible.
- */
-
-class ChangeTracker implements EventSubscriberInterface
+#[AsDoctrineListener('preUpdate')]
+#[AsDoctrineListener('onFlush')]
+class ChangeTracker
 {
-    public function getSubscribedEvents(): array
-    {
-        return [
-            Events::onFlush,
-            Events::preUpdate,
-        ];
-    }
-
     public function onFlush(OnFlushEventArgs $eventArgs): void
     {
         $em = $eventArgs->getEntityManager();

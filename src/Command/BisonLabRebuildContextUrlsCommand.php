@@ -2,6 +2,7 @@
 
 namespace BisonLab\ContextBundle\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,17 +21,15 @@ use BisonLab\ContextBundle\Controller\ContextController as ContextController;
  * @license   http://www.gnu.org/copyleft/lesser.html  LGPL License 2.1
  */
 
+#[AsCommand(
+    name: 'bisonlab:rebuild-context-urls',
+    description: 'Context rebuild.'
+)]
 class BisonLabRebuildContextUrlsCommand extends Command
 {
-    protected static $defaultName = 'bisonlab:rebuild-context-urls';
-
-    private $entityManager;
-    private $params;
-
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            ->setDescription('Context rebuild.')
             ->addOption('context_object', null, InputOption::VALUE_REQUIRED, 'The object you want the contexts to be rebuild for. ')
             ->addOption('system', null, InputOption::VALUE_REQUIRED, 'System name, if you want to just change one system context.')
             ->setHelp(<<<EOT
@@ -39,10 +38,10 @@ EOT
             );
     }
 
-    public function __construct(EntityManagerInterface $entityManager, ParameterBagInterface $params)
-    {
-        $this->entityManager = $entityManager;
-        $this->params = $params;
+    public function __construct(
+        private EntityManagerInterface $entityManager,
+        private ParameterBagInterface $params
+    ) {
         parent::__construct();
     }
 

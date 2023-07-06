@@ -19,4 +19,20 @@ class ContextLogRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ContextLog::class);
     }
+
+    public function findByOwner($context_class, $owner_id)
+    {
+        $entity_name = $context_class->getOwnerEntityClass();
+        $entity_alias = $context_class->getOwnerEntityAlias();
+
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('l')
+              ->from($this->_entityName, 'l')
+              ->where('l.owner_class in (:oc)')
+              ->andWhere('l.owner_id = :owner_id')
+              ->orderBy('l.logged_at', 'DESC')
+              ->setParameter("oc", [$entity_name, $entity_alias])
+              ->setParameter("owner_id", $owner_id);
+        return $qb->getQuery()->getResult();
+    }
 }

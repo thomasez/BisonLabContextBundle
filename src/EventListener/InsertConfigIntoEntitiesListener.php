@@ -2,9 +2,8 @@
 
 namespace BisonLab\ContextBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Events;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /*
@@ -12,22 +11,13 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  * what they are and can do, all from a simple config file.
  * contexts.yml
  */
-
-class InsertConfigIntoEntitiesListener implements EventSubscriberInterface
+#[AsDoctrineListener('postLoad')]
+#[AsDoctrineListener('prePersist')]
+class InsertConfigIntoEntitiesListener
 {
-    private $params;
-
-    public function __construct(ParameterBagInterface $params)
-    {
-        $this->params = $params;
-    }
-
-    public function getSubscribedEvents(): array
-    {
-        return [
-            Events::postLoad,
-            Events::prePersist,
-        ];
+    public function __construct(
+        private ParameterBagInterface $params
+    ) {
     }
 
     public function postLoad(LifecycleEventArgs $args): void
@@ -38,16 +28,11 @@ class InsertConfigIntoEntitiesListener implements EventSubscriberInterface
     public function prePersist(LifecycleEventArgs $args): void
     {
         $entity = $this->_insertConfig($args);
-
-        if ($entity && !$entity->getUrl() 
-                && method_exists($entity, 'resetUrl')) {
-            $entity->resetUrl();
-        }
     }
 
     private function _insertConfig($args)
     {
-        $entity = $args->getEntity();
+        $entity = $args->getObject();
         if (in_array("BisonLab\ContextBundle\Entity\ContextBaseTrait", class_uses($entity))) {
             $context_conf = $this->params->get('app.contexts');
             list($bundle, $object) = explode(":", $entity->getOwnerEntityAlias());

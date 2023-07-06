@@ -2,43 +2,28 @@
 
 namespace BisonLab\ContextBundle\EventListener;
 
-use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Context\EventArgs;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use Doctrine\ORM\Events;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use BisonLab\ContextBundle\Entity\ContextLog;
 
-/*
- * Does as little as possible.
- */
-
-class ContextHistoryListener implements EventSubscriberInterface
+#[AsDoctrineListener('onFlush')]
+class ContextHistoryListener
 {
     private $uow;
-    private $em;
-    private $token_storage;
 
-    public function __construct(TokenStorageInterface $token_storage, ManagerRegistry $doctrine)
-    // public function __construct(TokenStorageInterface $token_storage, Registry $doctrine)
-    {
-        $this->token_storage = $token_storage;
-        $this->doctrine      = $doctrine;
-    }
-
-    public function getSubscribedEvents(): array
-    {
-        return [
-            Events::onFlush,
-        ];
+    public function __construct(
+        private TokenStorageInterface $token_storage,
+        private ManagerRegistry $doctrine
+    ) {
     }
 
     public function onFlush(OnFlushEventArgs $eventArgs): void
     {
-        $this->em = $eventArgs->getEntityManager();
-        $this->uow = $this->em->getUnitOfWork();
+        $this->uow = $eventArgs->getEntityManager()->getUnitOfWork();
 
         foreach ($this->uow->getScheduledEntityInsertions() as $entity) {
             if (in_array("BisonLab\ContextBundle\Entity\ContextBaseTrait",

@@ -2,7 +2,6 @@
 
 namespace BisonLab\ContextBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -13,17 +12,30 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
 use BisonLab\ContextBundle\Entity\ContextLog;
 
+/*
+ * use these:
+
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Doctrine\Persistence\ManagerRegistry;
+
+ * Add these in the construct:
+
+        private ParameterBagInterface $parameterBag,
+        private FormFactoryInterface $formFactory,
+        private ManagerRegistry $managerRegistry,
+
+ */
+
 trait ContextTrait
 {
-
     /*
      * The Context stuff
      */
-
     public function contextGetAction(Request $request, $context_config, $access, $system, $object_name, $external_id)
     {
         $class = $context_config['entity'];
-        $em = $this->getDoctrine()->getManagerForClass($class);
+        $em = $this->managerRegistry->getManagerForClass($class);
 
         $repo = $em->getRepository($class);
 
@@ -74,7 +86,7 @@ trait ContextTrait
     public function contextPostAction(Request $request, $context_config, $access)
     {
         trigger_error('The '.__METHOD__.' method is deprecated. Please contextGetAction else instead', E_USER_DEPRECATED);
-        $post_data = $request->request->get('form');
+        $post_data = $request->request->all()['form'] ?? [];
 
         list( $system, $object_name) = explode("__", $post_data['system__object_name']);
         $object_id = $post_data['object_id'];
@@ -90,11 +102,9 @@ trait ContextTrait
             $context_arr[$c->getSystem()][$c->getObjectName()] = $c;
         }
 
-        $form_factory = $this->container->get('form.factory');
-
         // This is actually very wrong... It's not really common is it?
         // TODO: get rid of this one, aka make it generic.
-        $context_conf = $this->container->getParameter('app.contexts');
+        $context_conf = $this->parameterBag->get('app.contexts');
         if (strstr($context_for, ":")) {
             list($bundle, $object) = explode(":", $context_for);
         } else {
@@ -117,26 +127,26 @@ trait ContextTrait
                     continue;
 
                 $object_name = $context_object_config['object_name'];
-                $form_name  = "context__" . $system_name . "__" . $object_name;
+                $form_name  = "context_" . $system_name . "_" . $object_name;
                 $form_label = $context_object_config['label'];
 
                 // TODO: Use types more active. Like ExternalId should be
                 // compulsary in more or less all cases except
                 // "informal_url_only".
                 $has_value = false;
-                $required  = count($contexts) > 0 && isset($context_object_config['required']);
+                $required  = count($contexts) > 0 && ($context_object_config['required'] ?? false);
                 if (isset($context_arr[$system_name][$object_name])) {
                     $has_value = true;
                     $c_object = $context_arr[$system_name][$object_name];
 
-                    $form = $form_factory->createNamedBuilder($form_name,
+                    $form = $this->formFactory->createNamedBuilder($form_name,
                             FormType::class, $c_object)
                         ->add('id', HiddenType::class, array(
                           'data' => $c_object->getId()))
                         ->add('external_id', TextType::class, array(
                           'label' => 'External ID', 'required' => $required));
                 } else {
-                    $form = $form_factory->createNamedBuilder($form_name,
+                    $form = $this->formFactory->createNamedBuilder($form_name,
                             FormType::class)
                         ->add('external_id', TextType::class, array(
                           'label' => 'External ID', 'required' => $required));
@@ -147,31 +157,26 @@ trait ContextTrait
                  * URL in the forms. The rest will be calculated
                  * automatically.
                  */
-                if (!isset($context_object_config['url_from_method'])) {
-                    error_log("No url_from_method for " . $systen_name
-                            . "::" . $object_name);
-                } else {
-                    if ($context_object_config['url_from_method'] == "manual" 
-                      || $context_object_config['url_from_method'] == "editable") {
-                        $form->add('url', TextType::class, 
-                            array('label' => 'URL', 'required' => false));
-                    }
-                }
+                if (in_array(($context_object_config['url_from_method'] ?? null), ["manual", "editable"]))
+                    $form->add('url', TextType::class,
+                        array('label' => 'URL', 'required' => false));
                 $forms[] = array(
                     'label'     => $form_label,
                     'name'      => $form_name,
                     'has_value' => $has_value,
-                    'required'  => isset($context_object_config['required']),
+                    'required'  => $context_object_config['required'] ?? false,
                     'form'      => $form->getForm()->createView());
             }
         } 
         return $forms;
     }
 
-    public function updateContextForms($request, $context_for, $context_class, $owner) {
-        $em = $this->getDoctrine()->getManagerForClass($context_class);
+    public function updateContextForms($request, $context_for, $context_class, $owner)
+    {
+        $em = $this->managerRegistry->getManagerForClass($context_for);
+        $context_repo = $em->getRepository($context_class);
+        $context_conf = $this->parameterBag->get('app.contexts');
 
-        $context_conf = $this->container->getParameter('app.contexts');
         if (strstr($context_for, ":")) {
             list($bundle, $object) = explode(":", $context_for);
         } else {
@@ -180,23 +185,22 @@ trait ContextTrait
         }
         $conf = $context_conf[$bundle][$object];
         $forms = array();
-        // There  might be no contexts at all.
+        // There might be no contexts at all.
         if (!$conf) return $forms;
-        // Object_info was a bas choice, it's the context object listing per
+        // Object_info was a bad choice, it's the context object listing per
         // system.
         foreach ($conf as $system_name => $object_info) {
             // And here, context_object_config is the object config itself.
             foreach ($object_info as $context_object_config) {
                 $object_name = $context_object_config['object_name'];
-                $form_name  = "context__" . $system_name . "__" . $object_name;
+                $form_name  = "context_" . $system_name . "_" . $object_name;
 
-                $context_arr = $request->request->get($form_name);
-
-                if (empty($context_arr)) { continue; }
+                $post_data = $request->request->all();
+                $context_arr = $post_data[$form_name] ?? null;
+                if (!$context_arr) { continue; }
 
                 if (isset($context_arr['id']) ) {
-                    $context = $em->getRepository($context_class)
-                        ->find($context_arr['id']);
+                    $context = $context_repo->find($context_arr['id']);
                     if (empty($context_arr['external_id']) 
                             && empty($context_arr['url'])) { 
                         // No need for an empty context.
@@ -205,8 +209,8 @@ trait ContextTrait
                     } else {
                         $context->setExternalId(trim($context_arr['external_id']));
                         if (empty($context_arr['url']) ) {
-                            $context->setUrl(self::createContextUrl(
-                                $context_arr, $context_object_config));
+                            $context->setConfig($context_object_config);
+                            $context->resetUrl();
                         } else {
                             $context->setUrl($context_arr['url']);
                         }
@@ -218,38 +222,21 @@ trait ContextTrait
                     $context->setSystem($system_name);
                     $context->setObjectName($object_name);
                     $context->setExternalId(trim($context_arr['external_id']));
-                    if (empty($context_arr['url'])) {
-                        $context->setUrl(self::createContextUrl($context_arr,
-                            $context_object_config));
-                    } else {
-                        $context->setUrl($context_arr['url']);
-                    }
                     $context->setOwner($owner);
                     $owner->addContext($context);
                     $em->persist($context);
                     $em->persist($owner);
+                    if (empty($context_arr['url'])) {
+                        $context->setConfig($context_object_config);
+                        $context->resetUrl();
+                    } else {
+                        $context->setUrl($context_arr['url']);
+                    }
                 } else {
                     continue;
                 }
             }
         }
-    }
-
-    static function createContextUrl($context_arr, $config)
-    {
-        // Good old one.
-        if (isset($config['url_base'])) {
-            return $config['url_base'] . $context_arr['external_id'];
-        }    
-        // Or we have a twig template'ish.
-        if (isset($config['url_template'])) {
-            $url = $config['url_template'];
-            foreach ($context_arr as $key => $val) {
-                $url = preg_replace('/\{\{\s?'.$key.'\s?\}\}/i',
-                                $val , $url);
-            }
-            return $url;
-        }    
     }
     
     public function createContextSearchForm($config, $options = array())
@@ -283,21 +270,21 @@ trait ContextTrait
     /* 
      * Showing the context logs.
      */
-    public function showContextLogPage($request, $access, $entity_name, $id)
+    public function showContextLogPage($request, $access, $context_class, $id)
     {
-        $em = $this->getDoctrine()->getManagerForClass($entity_name);
+        $cc = new $context_class();
+        $entity_name = $cc->getOwnerEntityClass();
+        $entity_alias = $cc->getOwnerEntityAlias();
+        $em = $this->managerRegistry->getManagerForClass($entity_name);
         $entity = $em->getRepository($entity_name)->find($id);
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find '
                 . $entity_name . ' entity.');
         }
 
-        $bcont_em = $this->getDoctrine()->getManagerForClass(ContextLog::class);
+        $bcont_em = $this->managerRegistry->getManagerForClass(ContextLog::class);
         $log_repo = $bcont_em->getRepository(ContextLog::class);
-        $logs = $log_repo->findBy(array(
-            'owner_class' => $entity_name,
-            'owner_id' => $id)
-            , array('logged_at' => 'DESC'));
+        $logs = $log_repo->findByOwner($cc, $id);
 
         if ($access == 'rest') {
             return $this->returnRestData($request, $logs);
