@@ -4,91 +4,72 @@ namespace BisonLab\ContextBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="BisonLab\ContextBundle\Repository\ContextLogRepository")
- *
- * @ORM\Table(
- *     name="bisonlab_context_log",
- *  indexes={
- *      @ORM\Index(name="log_owner_lookup_idx", columns={"owner_class", "owner_id"})
- *  }
- * )
- *
- */
-
+#[ORM\Table(name: 'bisonlab_context_log')]
+#[ORM\Index(name: 'log_owner_lookup_idx', columns: ['owner_class', 'owner_id'])]
+#[ORM\Entity(repositoryClass: 'BisonLab\ContextBundle\Repository\ContextLogRepository')]
 class ContextLog
 {
     /**
      * @var integer $id
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue
      */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
     protected $id;
 
     /**
      * @var string $action
-     *
-     * @ORM\Column(type="string", length=8)
      */
+    #[ORM\Column(type: 'string', length: 8)]
     protected $action;
 
     /**
      * @var \DateTime $logged_at
-     *
-     * @ORM\Column(type="datetime")
      */
+    #[ORM\Column(type: 'datetime')]
     protected $logged_at;
 
     /**
      * @var string $userid
      * Annoyingly enough, there might not be a (known) user doing this.
-     *
-     * @ORM\Column(type="string", length=80, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 80, nullable: true)]
     protected $user_id;
 
     /**
      * @var string $classname
-     *
-     * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: 'string', length: 255)]
     protected $owner_class;
 
     /**
      * @var int $id
-     *
-     * @ORM\Column(type="string", length=80)
      */
+    #[ORM\Column(type: 'string', length: 80)]
     private $owner_id;
 
     /**
      * @var string $system
-     *
-     * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $system;
 
     /**
      * @var string $object_name
-     *
-     * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $object_name;
 
     /**
      * @var string $external_id
-     *
-     * @ORM\Column(type="string", length=80)
      */
+    #[ORM\Column(type: 'string', length: 80)]
     private $external_id;
 
     /**
      * @var string $url
-     *
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $url;
 
     public function __construct($context, $action)

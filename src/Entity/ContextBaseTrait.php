@@ -13,39 +13,34 @@ trait ContextBaseTrait
 
     /**
      * @var integer $id
-     *
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Id]
+    #[ORM\Column(name: 'id', type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
     /**
      * @var string $system
-     *
-     * @ORM\Column(name="system", type="string", length=255)
      */
+    #[ORM\Column(name: 'system', type: 'string', length: 255)]
     private $system;
 
     /**
      * @var string $object_name
-     *
-     * @ORM\Column(name="object_name", type="string", length=255)
      */
+    #[ORM\Column(name: 'object_name', type: 'string', length: 255)]
     private $object_name;
 
     /**
      * @var string $external_id
-     *
-     * @ORM\Column(name="external_id", type="string", length=80)
      */
+    #[ORM\Column(name: 'external_id', type: 'string', length: 80)]
     private $external_id;
 
     /**
      * @var string $url
-     *
-     * @ORM\Column(name="url", type="string", length=255, nullable=true)
      */
+    #[ORM\Column(name: 'url', type: 'string', length: 255, nullable: true)]
     private $url;
 
     public function __construct(

@@ -4,7 +4,7 @@ namespace BisonLab\ContextBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/** @ORM\MappedSuperclass */
+#[ORM\MappedSuperclass]
 class ContextBase
 {
     use ContextBaseTrait;
