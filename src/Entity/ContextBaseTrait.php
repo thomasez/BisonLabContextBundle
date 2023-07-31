@@ -282,7 +282,8 @@ trait ContextBaseTrait
         // keep it but if you end up having issues, just clone the function
         // into your context object and return true.
         return (
-            ($this->getConfig()['type'] == 'external_master' || 
+            ($this->getConfig()['type'] == 'readonly' || 
+             $this->getConfig()['type'] == 'external_master' || 
              $this->getConfig()['type'] == 'master') 
             && $this->getExternalId()) ? false : true;
     }
