@@ -13,7 +13,7 @@ class ChangeTracker
 {
     public function onFlush(OnFlushEventArgs $eventArgs): void
     {
-        $em = $eventArgs->getEntityManager();
+        $em = $eventArgs->getObjectManager();
         $uow = $em->getUnitOfWork();
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
             if (in_array("BisonLab\ContextBundle\Entity\ContextBaseTrait",

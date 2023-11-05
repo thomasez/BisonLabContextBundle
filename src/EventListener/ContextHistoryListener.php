@@ -23,7 +23,7 @@ class ContextHistoryListener
 
     public function onFlush(OnFlushEventArgs $eventArgs): void
     {
-        $this->uow = $eventArgs->getEntityManager()->getUnitOfWork();
+        $this->uow = $eventArgs->getObjectManager()->getUnitOfWork();
 
         foreach ($this->uow->getScheduledEntityInsertions() as $entity) {
             if (in_array("BisonLab\ContextBundle\Entity\ContextBaseTrait",
