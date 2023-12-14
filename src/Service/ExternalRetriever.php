@@ -65,17 +65,18 @@ class ExternalRetriever
     {
         if (!$system = $context->getSystem())
             return null;
+        if (!isset($this->retrievers[$system]))
+            return null;
         if (!$object_name = $context->getObjectName())
             return null;
         if (!$external_id = $context->getExternalId())
             return null;
-        if (is_array($this->retrievers[$system] ?? null)) {
+        if (is_array($this->retrievers[$system])) {
             if ($retriever = $this->retrievers[$system][$object_name] ?? null)
                 return $retriever->getExternalDataFromContext($context);
         } elseif ($retriever = $this->retrievers[$system] ?? null) {
             return $retriever->getExternalDataFromContext($context);
-        } else {
-            return null;
         }
+        return null;
     }
 }
