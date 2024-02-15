@@ -12,7 +12,7 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "^6.3|^7.0"
+        "symfony/framework-bundle": "^6.3 || ^7.0"
     },
     "suggest": {
         "guzzlehttp/guzzle": "^7.7"
