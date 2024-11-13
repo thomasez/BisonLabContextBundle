@@ -46,8 +46,7 @@ trait ContextTrait
         }
 
         if (!$entities) {
-            return $this->render('@BisonLabContext/message.html.twig', 
-                array('message' => 'Sorry, could not find what you were looking for'));
+            throw $this->createNotFoundException('Sorry, could not find what you were looking for');
         }
 
         if (count($entities) == 1) {
