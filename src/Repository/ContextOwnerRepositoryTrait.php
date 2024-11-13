@@ -28,7 +28,7 @@ trait ContextOwnerRepositoryTrait
               ->andWhere('ec.external_id = :external_id')
               ->setParameter("system", $system)
               ->setParameter("object_name", $object_name)
-              ->setParameter("external_id", $external_id);
+              ->setParameter("external_id", (string)$external_id);
         return $qb2->getQuery()->getResult();
     }
 }
