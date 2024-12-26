@@ -19,7 +19,7 @@ trait ContextOwnerRepositoryTrait
 
     public function findByContext($system, $object_name, $external_id)
     {
-        $qb2 = $this->_em->createQueryBuilder();
+        $qb2 = $this->createQueryBuilder();
         $qb2->select('e')
               ->from($this->_entityName, 'e')
               ->innerJoin('e.contexts', 'ec')

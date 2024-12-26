@@ -4,6 +4,7 @@ namespace BisonLab\ContextBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostLoadEventArgs;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /*
@@ -20,7 +21,7 @@ class InsertConfigIntoEntitiesListener
     ) {
     }
 
-    public function postLoad(LifecycleEventArgs $args): void
+    public function postLoad(PostLoadEventArgs $args): void
     {
         $this->_insertConfig($args);
     }
