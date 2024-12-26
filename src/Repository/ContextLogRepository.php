@@ -25,9 +25,7 @@ class ContextLogRepository extends ServiceEntityRepository
         $entity_name = $context_class->getOwnerEntityClass();
         $entity_alias = $context_class->getOwnerEntityAlias();
 
-        $qb = $this->createQueryBuilder();
-        $qb->select('l')
-              ->from($this->_entityName, 'l')
+        $qb = $this->createQueryBuilder('l')
               ->where('l.owner_class in (:oc)')
               ->andWhere('l.owner_id = :owner_id')
               ->orderBy('l.logged_at', 'DESC')

@@ -19,13 +19,11 @@ trait ContextOwnerRepositoryTrait
 
     public function findByContext($system, $object_name, $external_id)
     {
-        $qb2 = $this->createQueryBuilder();
-        $qb2->select('e')
-              ->from($this->_entityName, 'e')
-              ->innerJoin('e.contexts', 'ec')
-              ->where('ec.system = :system')
-              ->andWhere('ec.object_name = :object_name')
-              ->andWhere('ec.external_id = :external_id')
+        $qb2 = $this->createQueryBuilder('o')
+              ->innerJoin('o.contexts', 'oc')
+              ->where('oc.system = :system')
+              ->andWhere('oc.object_name = :object_name')
+              ->andWhere('oc.external_id = :external_id')
               ->setParameter("system", $system)
               ->setParameter("object_name", $object_name)
               ->setParameter("external_id", (string)$external_id);

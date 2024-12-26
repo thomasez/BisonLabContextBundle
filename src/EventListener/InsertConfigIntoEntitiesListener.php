@@ -5,6 +5,7 @@ namespace BisonLab\ContextBundle\EventListener;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostLoadEventArgs;
+use Doctrine\ORM\Event\PrePersistEventArgs;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /*
@@ -26,7 +27,7 @@ class InsertConfigIntoEntitiesListener
         $this->_insertConfig($args);
     }
 
-    public function prePersist(LifecycleEventArgs $args): void
+    public function prePersist(PrePersistEventArgs $args): void
     {
         $entity = $this->_insertConfig($args);
     }
