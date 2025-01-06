@@ -3,7 +3,6 @@
 namespace BisonLab\ContextBundle\EventListener;
 
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostLoadEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
