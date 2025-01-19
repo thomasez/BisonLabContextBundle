@@ -16,23 +16,22 @@ use Doctrine\Common\Collections\Collection;
 trait ContextOwnerTrait
 {
     /*
-     * This has to be pasted into the owner object, since it's a good thing  to
+     * This has to be pasted into the owner object, since it's a good thing to
      * keep the naming correct.
-     * s/whatever/realname/g 
+     * s/whatever/ENTITYNAME/g 
      * (remember to add the slash and asterixes..)
-     * @ORM\OneToMany(targetEntity="WhateverContext", mappedBy="whatever", cascade={"persist", "remove"})
+    #[ORM\OneToMany(targetEntity: 'WhateverContext', mappedBy: 'owner', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $contexts;
      */
 
     /* 
-     * This could also be solved with keeping __construct() and then
-     * use ContextOwnerTrait { __construct as traitConstruct }
-     * but I cannot see why it's better. To me it's more confusing.
-     */
-    public function traitConstruct($options = array())
+     * I presume you have a construct in the entiti including this, but if not.
+     * If you do, put the line inside this into it.
+    public function __construct($options = array())
     {
+        // You will need this one in yours if you have it.
         $this->contexts = new ArrayCollection();
-    }
+     */
 
     /**
      * Get contexts
@@ -67,9 +66,19 @@ trait ContextOwnerTrait
      * @return $this
      * Can't do a class check since it's different context classes and aliasing
      * in the main owner class seems noe to be working.
+     *
      */
-    public function addContext($context)
+    public function addContext($context): self
     {
+        // First, we gotta know if we already has this one.
+        foreach ($this->contexts as $c) {
+            if ($c->getSystem() == $context->getSystem()
+                    && $c->getObjectName() == $context->getObjectName()
+                    && $c->getExternalId() == $context->getExternalId()) {
+                return $this;
+            }
+        } 
+
         $this->contexts[] = $context;
         $context->setOwner($this);
         return $this;
