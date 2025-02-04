@@ -119,6 +119,8 @@ trait ContextBaseTrait
     public function setExternalId(string|int $externalId): self
     {
         $this->external_id = $externalId;
+        // Can just as well do this anyway.
+        $this->resetUrl();
         return $this;
     }
 
@@ -141,6 +143,12 @@ trait ContextBaseTrait
      */
     public function resetUrl(): void
     {
+        // In case we have a template, but do actually mena this is a manually
+        // set URL.
+        if ($url_from_method = $this->config['url_from_method'] ?? false) {
+            if ($url_from_method == "manual")
+                return;
+        }
         // Good old one. No externalid, no need to do this?
         // The URL may just be a url, alas, do this anyway.
         if (isset($this->config['url_base'])) {
