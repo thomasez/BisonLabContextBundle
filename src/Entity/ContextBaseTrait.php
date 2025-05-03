@@ -83,7 +83,7 @@ trait ContextBaseTrait
      *
      * @return string 
      */
-    public function getSystem(): string
+    public function getSystem(): ?string
     {
         return $this->system;
     }
@@ -105,7 +105,7 @@ trait ContextBaseTrait
      *
      * @return string 
      */
-    public function getObjectName(): string
+    public function getObjectName(): ?string
     {
         return $this->object_name;
     }
@@ -129,7 +129,7 @@ trait ContextBaseTrait
      *
      * @return string 
      */
-    public function getExternalId(): string|int
+    public function getExternalId(): string|int|null
     {
         return $this->external_id;
     }
