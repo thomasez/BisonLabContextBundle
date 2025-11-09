@@ -7,7 +7,6 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
-#[AsDoctrineListener('preUpdate')]
 #[AsDoctrineListener('onFlush')]
 class ChangeTracker
 {
@@ -27,28 +26,6 @@ class ChangeTracker
                 if ($entity->isUnique())
                     $this->_checkUnique($entity, $em);
         }
-    }
-
-    public function preUpdate(PreUpdateEventArgs $eventArgs): void
-    {
-        if ($eventArgs->hasChangedField('attributes_json')) {
-            if ($json = $eventArgs->getNewValue('attributes_json')) {
-                $la = $this->_array_change_key_case_recursive(json_decode($json, true), MB_CASE_LOWER);
-                $json = json_encode($la);
-                $eventArgs->setNewValue('attributes_json', $json);
-            }
-        }
-    }
-
-    private function _array_change_key_case_recursive($arr, $case = MB_CASE_LOWER): array
-    {
-        $ret = array();
-        foreach ($arr as $k => $v) {
-            if(is_array($v))
-                $v = $this->_array_change_key_case_recursive($v, $case);
-            $ret[mb_convert_case($k, $case, "UTF-8")] = $v;
-        }
-        return $ret;
     }
 
     private function _checkUnique($context, $em): void
