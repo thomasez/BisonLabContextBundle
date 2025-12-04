@@ -36,8 +36,9 @@ class ChangeTracker
                 'external_id' => $context->getExternalId(),
             ))) {
             // My, myself or not I?
-            if ($exists !== $context)
-                throw new ConstraintDefinitionException("Context " . $context->getLabel() . " with external id " . $context->getExternalId() . " is already in use.");
+            if ($exists !== $context) {
+                throw new ConstraintDefinitionException("Context " . $context->getLabel() . " with external id " . $context->getExternalId() . " is already in use by " . (string)$exists->getOwner() . " the duplicate is " . (string)$context->getOwner() );
+            }
         }
     }
 }

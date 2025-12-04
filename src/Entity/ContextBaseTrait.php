@@ -180,6 +180,14 @@ trait ContextBaseTrait
                     $this->url = null;
                     break;
                 }
+                // Nothing to replace with, alas nothing to do. Keep the URL.
+                // TODO: See what comes out of this. May want to just
+                // set null as url.
+                if (empty($val)) {
+                    break;
+                }
+                // This need a value to work, which is why we have the
+                // checks above.
                 $this->url = preg_replace('/\{\{\s?'.$key.'\s?\}\}/i',
                                 $val , $this->url);
             }
