@@ -82,12 +82,16 @@ trait ContextTrait
         }
     }
 
+    /*
+     * I so much want to deprecate and kill this, but creating a search form
+     * with GET compatible with how the routes are for contextGetAction is
+     * very messy and may even require javascript.
+     */
     public function contextPostAction(Request $request, $context_config, $access)
     {
-        trigger_error('The '.__METHOD__.' method is deprecated. Please contextGetAction else instead', E_USER_DEPRECATED);
         $post_data = $request->request->all()['form'] ?? [];
 
-        list( $system, $object_name) = explode("__", $post_data['system__object_name']);
+        list($system, $object_name) = explode("__", $post_data['system__object_name']);
         $object_id = $post_data['object_id'];
 
         return $this->contextGetAction($request, $context_config, $access, $system, $object_name, $object_id);
