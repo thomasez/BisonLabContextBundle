@@ -3,14 +3,13 @@
 namespace BisonLab\ContextBundle\EventListener;
 
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Context\EventArgs;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\Common\EventArgs;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use BisonLab\ContextBundle\Entity\ContextLog;
 
-#[AsDoctrineListener('onFlush')]
+#[AsDoctrineListener('postFlush')]
 class ContextHistoryListener
 {
     private $uow;
@@ -21,7 +20,7 @@ class ContextHistoryListener
     ) {
     }
 
-    public function onFlush(OnFlushEventArgs $eventArgs): void
+    public function postFlush(EventArgs $eventArgs): void
     {
         $this->uow = $eventArgs->getObjectManager()->getUnitOfWork();
 
