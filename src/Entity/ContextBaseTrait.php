@@ -256,6 +256,15 @@ trait ContextBaseTrait
         return (string)$this->id;
     }
 
+    public function toArray(): array
+    {
+        return [
+            'system' => $this->system,
+            'object_name' => $this->object_name,
+            'external_id' => $this->external_id,
+        ];
+    }
+
     public function setConfig($config = array()): self
     {
         $this->config = $config;
