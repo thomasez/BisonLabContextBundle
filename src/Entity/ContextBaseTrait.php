@@ -16,7 +16,7 @@ trait ContextBaseTrait
      */
     #[ORM\Id]
     #[ORM\Column(name: 'id', type: 'integer')]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     private $id;
 
     /**

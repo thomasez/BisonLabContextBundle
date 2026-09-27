@@ -14,7 +14,7 @@ class ContextLog
      */
     #[ORM\Column(type: 'integer')]
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: "SEQUENCE")]
     protected $id;
 
     /**
