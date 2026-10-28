@@ -225,9 +225,17 @@ trait ContextBaseTrait
     /**
      * Generic main object setting.
      *
+     * Looking odd that this is nullable while the Column definition says no?
+     * The EventListener will take care of removing this entity if no owner
+     * is set. The owners removeContext has to either have orphanRemoval
+     * or set Owner to null so that the context will be gone.
+     *
+     * Moving a context has to remove and set more or less in the same opration
+     * or the context will be gone.
+     *
      * @return object
      */
-    public function setOwner(object $object): self
+    public function setOwner(?object $object): self
     {
         $this->owner = $object;
         return $this;

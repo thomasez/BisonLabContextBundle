@@ -22,9 +22,16 @@ class ChangeTracker
         }
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if (in_array("BisonLab\ContextBundle\Entity\ContextBaseTrait",
-                    class_uses($entity)))
-                if ($entity->isUnique())
+                    class_uses($entity))) {
+                if ($entity->isUnique()) {
                     $this->_checkUnique($entity, $em);
+                }
+                // NO owner, someone has done a removeContext and not set any
+                // new Owner.
+                if (!$entity->getOwner()) {
+                    $em->remove($entity);
+                }
+            }
         }
     }
 
