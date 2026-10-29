@@ -11,6 +11,25 @@ trait ContextBaseTrait
      */
     private $config;
 
+    /*
+     * Usage:
+     * - Add this trait to your owner class.
+     * - Add the contexts column so it will be in the data base:
+
+    #[ORM\OneToMany(targetEntity: EntityContext::class, mappedBy: 'block', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private $contexts;
+
+     * OR, if you want to be able to set a new Owner object without it risking being orphan-removed:
+
+    #[ORM\OneToMany(targetEntity: EntityContext::class, mappedBy: 'block', cascade: ['persist', 'remove'])]
+    private $contexts;
+
+     * If you remove orphanRemoval (which you need to when you want to be able
+     * to set a new Owner on the context), you need to setOwner(null) in
+     * removeContext so it will disappear from the data base on remove. 
+    
+     */
+
     /**
      * @var integer $id
      */

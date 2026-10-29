@@ -9,6 +9,9 @@ class ContextBase
 {
     use ContextBaseTrait;
 
+    /*
+     * See ContextBaseTrait for some simple documentation.
+     */
     public function __construct($options = array())
     {
         return $this->traitConstruct($options);
